@@ -1,0 +1,15 @@
+[package]
+name = "prost-parse"
+version = "0.1.0"
+authors = [
+    "Jeff Hutchins <jeff@nti.io>",
+]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+convert_case = "0.6.0"
+nom = "7.1.1"
+prost-types = { version = "0.11.0", path = "../prost-types", default-features = false }
+prost = { version = "0.11.0", path = "..", default-features = false }
