@@ -1,28 +1,17 @@
+use prost_types::FileDescriptorSet;
 use std::ffi::OsStr;
 use std::fs;
 use std::io::{Error, Result};
-use std::path::{Path, PathBuf};
-
-use prost_types::FileDescriptorSet;
+use std::path::Path;
 
 mod parsers;
 
 #[derive(Debug, Default)]
-pub struct Config {
-    out_dir: Option<PathBuf>,
-}
+pub struct Config {}
 
 impl Config {
     pub fn new() -> Self {
         Self::default()
-    }
-
-    pub fn out_dir<P>(&mut self, dir: P) -> &mut Self
-    where
-        P: Into<PathBuf>,
-    {
-        self.out_dir = Some(dir.into());
-        self
     }
 
     pub fn parse(
@@ -48,14 +37,14 @@ impl Config {
                 for service in &mut file_descriptor.service {
                     for mut method in &mut service.method {
                         method.input_type = method.input_type.as_ref().map(|name| {
-                            if name.starts_with(".") {
+                            if name.starts_with('.') {
                                 name.into()
                             } else {
                                 format!(".{package}.{name}")
                             }
                         });
                         method.output_type = method.output_type.as_ref().map(|name| {
-                            if name.starts_with(".") {
+                            if name.starts_with('.') {
                                 name.into()
                             } else {
                                 format!(".{package}.{name}")
@@ -84,7 +73,6 @@ mod tests {
         fds.file[0].syntax = Some(String::from("proto2"));
         let fds = dbg!(fds);
         let file_descriptor_set = Config::new()
-            .out_dir(std::env::temp_dir())
             .parse(&["src/fixtures/smoke_test/smoke_test.proto"], &["src"])
             .unwrap();
         assert_eq!(file_descriptor_set, fds);
